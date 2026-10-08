@@ -88,7 +88,7 @@ Run the following **on the clean ServerBridge VPS**, not inside ChatGPT:
 ~~~bash
 git clone https://github.com/21sacredthreads/serverbridge-mcp.git
 cd serverbridge-mcp
-chmod +x install.sh trust-host.sh check.sh
+chmod +x install.sh trust-host.sh check.sh start.sh
 ./install.sh
 ~~~
 
@@ -144,7 +144,7 @@ This writes the verified keys to the dedicated `known_hosts` file, while leaving
 
 ~~~bash
 ./check.sh
-docker compose up -d
+./start.sh
 docker compose ps
 ~~~
 
@@ -214,7 +214,7 @@ Run these on the machine hosting ServerBridge, inside its repository directory:
 | Task | Command |
 | --- | --- |
 | Show containers | `docker compose ps` |
-| Start/recreate | `docker compose up -d` |
+| Start for first time | `./start.sh` |
 | Proxy logs | `docker compose logs --tail=100 auth-proxy` |
 | SSH backend logs | `docker compose logs --tail=100 ssh-mcp` |
 | Stop containers | `docker compose down` |
