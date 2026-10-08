@@ -1,0 +1,13 @@
+name: Static checks
+on:
+  push:
+  pull_request:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Bash syntax
+        run: bash -n install.sh trust-host.sh check.sh
+      - name: Run release tests
+        run: python3 -m unittest discover -s tests -v
