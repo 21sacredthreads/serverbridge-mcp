@@ -1,0 +1,52 @@
+name: serverbridge-mcp
+services:
+  ssh-mcp:
+    image: ${SSH_MCP_IMAGE:-ghcr.io/blackaxgit/ssh-mcp:latest}
+    restart: unless-stopped
+    environment:
+      SSH_MCP_CONFIG: /config/servers.toml
+      SSH_MCP_TRANSPORT: http
+      SSH_MCP_HTTP_HOST: 0.0.0.0
+      SSH_MCP_HTTP_PORT: "8000"
+      SSH_MCP_HTTP_STATELESS: "true"
+      SSH_MCP_HTTP_TOKEN: ${SSH_MCP_HTTP_TOKEN:?Run ./install.sh first}
+      SSH_MCP_HTTP_ALLOWED_HOSTS: "ssh-mcp,ssh-mcp:*,localhost,localhost:*"
+      SSH_MCP_LOG_FORMAT: json
+    volumes:
+      - ./config/servers.toml:/config/servers.toml:ro
+      - ./.runtime/ssh:/home/sshmcp/.ssh:ro
+    networks:
+      - private_mcp
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    security_opt:
+      - no-new-privileges:true
+
+  auth-proxy:
+    image: ${AUTH_PROXY_IMAGE:-ghcr.io/sigbit/mcp-auth-proxy:latest}
+    restart: unless-stopped
+    depends_on:
+      - ssh-mcp
+    command: ["http://ssh-mcp:8000"]
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      EXTERNAL_URL: https://${MCP_DOMAIN:?Run ./install.sh first}
+      TLS_ACCEPT_TOS: "true"
+      PASSWORD: ${ACCESS_PASSWORD:?Run ./install.sh first}
+      PROXY_BEARER_TOKEN: ${SSH_MCP_HTTP_TOKEN:?Run ./install.sh first}
+      DATA_PATH: /data
+    volumes:
+      - auth_data:/data
+    networks:
+      - private_mcp
+    security_opt:
+      - no-new-privileges:true
+
+networks:
+  private_mcp:
+volumes:
+  auth_data:
