@@ -24,6 +24,14 @@ class ReleaseTests(unittest.TestCase):
         for value in ('admitmint.com', 'quickidly', 'srv1912679', 'frisco'):
             self.assertNotIn(value, joined)
 
+    def test_safe_start_sequence(self):
+        install = (ROOT / 'install.sh').read_text()
+        start = (ROOT / 'start.sh').read_text()
+        self.assertNotIn('chown -R 1000:1000', install)
+        self.assertIn('./check.sh', start)
+        self.assertLess(start.index('./check.sh'), start.index('chown -R 1000:1000'))
+        self.assertLess(start.index('chown -R 1000:1000'), start.index('docker compose up -d'))
+
     def test_no_local_secrets_shipped(self):
         for path in ('.env', 'config/servers.toml', '.runtime/ssh/id_ed25519'):
             self.assertFalse((ROOT / path).exists(), path)
