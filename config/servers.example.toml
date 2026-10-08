@@ -1,0 +1,18 @@
+# Safe example only. Real servers.toml is generated and gitignored.
+[settings]
+command_timeout = 30
+max_output_bytes = 51200
+max_command_bytes = 65536
+known_hosts = true
+max_parallel_hosts = 5
+
+[groups]
+production = { description = "Your Linux servers" }
+
+[servers.example-vps]
+hostname = "203.0.113.10"
+port = 22
+user = "deploy"
+identity_file = "/home/sshmcp/.ssh/id_ed25519"
+groups = ["production"]
+description = "Example VPS – replace with your server"
