@@ -12,6 +12,11 @@ This repository is **an integration and guided installer**, not a fork or a clai
 > [!WARNING]
 > This service can execute commands on servers you authorize. Treat its public endpoint and login credentials as privileged infrastructure access. Start with a dedicated non-root SSH account, minimal sudo rights (prefer none), and a staging server. Do not publish credentials or SSH keys. Upstream dangerous-command detection is NOT a security boundary.
 
+
+## Step-by-step user guide
+
+New to VPS, Docker, or MCP? Follow the [complete installation and usage guide](docs/USER_GUIDE.md), including DNS setup, SSH key authorization, ChatGPT connection, example commands, and troubleshooting.
+
 ## Architecture
 
 ```text
