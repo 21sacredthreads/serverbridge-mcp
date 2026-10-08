@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+.runtime/
+config/servers.toml
+**/*.pem
+**/id_ed25519
+**/id_rsa
+**/known_hosts
+*.bak
+*.backup
+*.log
+.DS_Store
+__pycache__/
+*.pyc
