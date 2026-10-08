@@ -57,20 +57,11 @@ groups = ["production"]
 description = "Managed Linux VPS"
 EOF
 chmod 600 config/servers.toml
-if [[ "$(id -u)" != 1000 ]]; then
-  if [[ "$(id -u)" == 0 ]]; then
-    chown -R 1000:1000 .runtime/ssh
-    chown 1000:1000 config/servers.toml
-  elif command -v sudo >/dev/null && sudo -v; then
-    sudo chown -R 1000:1000 .runtime/ssh
-    sudo chown 1000:1000 config/servers.toml
-  else
-    fail 'Configuration created; root/sudo required for container UID 1000 to read key and inventory.'
-  fi
-fi
+# Keep credentials owned by the installing user until the public key is copied
+# and the host key verified. start.sh transfers SSH files to the container UID.
 printf '\nCreated configuration; NO services started and no remote changes made.\n'
 printf '1. Install the following public key for target user in ~/.ssh/authorized_keys:\n'
 cat .runtime/ssh/id_ed25519.pub
 printf '\n2. Independently verify and trust host fingerprint: ./trust-host.sh %s %s\n' "$host" "$port"
-printf '3. Validate: ./check.sh\n4. Start: docker compose up -d\n5. MCP URL: https://%s/mcp\n' "$domain"
+printf '3. Validate: ./check.sh\n4. Start safely: ./start.sh\n5. MCP URL: https://%s/mcp\n' "$domain"
 printf 'Access password is in .env; never commit it.\n'
