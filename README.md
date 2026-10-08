@@ -41,7 +41,7 @@ The SSH backend is not published on a host port. Only the authentication proxy p
 ```bash
 git clone https://github.com/21sacredthreads/serverbridge-mcp.git
 cd serverbridge-mcp
-chmod +x install.sh trust-host.sh check.sh
+chmod +x install.sh trust-host.sh check.sh start.sh
 ./install.sh
 ```
 
@@ -50,7 +50,7 @@ The installer asks for the MCP subdomain, SSH host, non-root account and port. I
 1. Authorize the public key displayed by the installer in the target account's `~/.ssh/authorized_keys`. Use your provider console or an existing trusted SSH session. An alternative, if suitable, is `ssh-copy-id -i .runtime/ssh/id_ed25519.pub -p 22 deploy@YOUR-SERVER` (change user, host, and port).
 2. Run `./trust-host.sh YOUR-SERVER 22`. Compare the displayed SSH fingerprint to a trusted fingerprint from your provider or an already trusted connection. Only then type `VERIFIED`.
 3. Run `./check.sh` to validate local files and Compose interpolation.
-4. Start the stack: `docker compose up -d`.
+4. Start the stack: `./start.sh` (prepares permissions for the non-root container).
 5. Verify: `docker compose ps`. Connect your AI app to `https://YOUR-MCP-DOMAIN/mcp` and complete password-based authentication. Your password is stored in `.env` and is never printed by the installer.
 
 For a quick check after connection, ask the assistant to **list available servers** and **dry-run a harmless command**, then run a harmless read-only command. Different MCP clients have different setup screens.
@@ -72,7 +72,7 @@ For a quick check after connection, ask the assistant to **list available server
 
 ```bash
 ./check.sh                 # Validate local config after key + host enrollment
-docker compose up -d        # Start on clean VPS
+./start.sh                 # Validated first startup on clean VPS
 docker compose ps           # Show service status
 docker compose logs --tail=100 auth-proxy   # Review proxy issues
 docker compose logs --tail=100 ssh-mcp      # Review backend issues
@@ -89,4 +89,4 @@ The original configuration, scripts and documentation in this repository are MIT
 
 ## Project status
 
-**Initial integration / testing release.** Static checks do not constitute an end-to-end deployment test. The packaged installer must be validated on a disposable clean VPS before production or public release. Issues and PRs welcome after the first verified installation.
+**Initial integration / testing release.** Automated static checks do not constitute an end-to-end deployment test. The packaged installer must be validated on a disposable clean VPS before production or public release. Issues and PRs welcome after the first verified installation.
